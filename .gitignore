@@ -4,3 +4,5 @@ build/
 # IDE 和编辑器文件 （.pro文件会生成.pro.user存储影子构建目录）
 *.user
 
+# 图片文件
+*.png
