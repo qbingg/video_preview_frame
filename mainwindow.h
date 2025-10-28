@@ -25,6 +25,10 @@ public:
     bool isVideoFile(const QString &filePath);
     void getVideoDuration(const QString &filePath);
     void getVideoFrameRate(const QString &filePath);
+
+    double convertToSeconds(const QTime time);
+    QTime convertToTime(const double totalSeconds);
+
 private:
     Ui::MainWindow *ui;
 

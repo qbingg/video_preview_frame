@@ -149,6 +149,32 @@ void MainWindow::getVideoFrameRate(const QString& filePath)
     });
 }
 
+double MainWindow::convertToSeconds(const QTime time)
+{
+    // 获取毫秒精度的总秒数
+    double totalSeconds = time.hour() * 3600.0 +
+                          time.minute() * 60.0 +
+                          time.second() +
+                          time.msec() / 1000.0;
+    QString str = QString::number(totalSeconds,'f',3);
+    qDebug()<<"convertToSeconds："<<str;
+    return totalSeconds;
+}
+
+QTime MainWindow::convertToTime(const double totalSeconds)
+{
+    // 将总秒数转换为时、分、秒、毫秒
+    int hours = static_cast<int>(totalSeconds) / 3600;
+    int minutes = (static_cast<int>(totalSeconds) % 3600) / 60;
+    int seconds = static_cast<int>(totalSeconds) % 60;
+    int milliseconds = static_cast<int>((totalSeconds - static_cast<int>(totalSeconds)) * 1000);
+
+    // 创建 QTime 对象
+    QTime time(hours, minutes, seconds, milliseconds);
+
+    return time;
+}
+
 // 使用QProcess获取视频时长
 void MainWindow::getVideoDuration(const QString& filePath)
 {
@@ -164,23 +190,9 @@ void MainWindow::getVideoDuration(const QString& filePath)
                     bool ok;
                     double duration = output.toDouble(&ok);
                     if (ok && duration > 0) {
-                        // 成功获取时长，更新UI
-                        // 格式化为时分秒毫秒
-                        int totalSeconds = static_cast<int>(duration);
-                        int hours = totalSeconds / 3600;
-                        int minutes = (totalSeconds % 3600) / 60;
-                        int seconds = totalSeconds % 60;
-                        int milliseconds = static_cast<int>((duration - totalSeconds) * 1000);
-
-                        QTime durationTime(hours, minutes, seconds, milliseconds);
 
                         //设定值Slider最大值：帧数 = 总秒数*帧率
                         ui->horizontalSlider->setMaximum(duration * ui->video_frame_rate->value());
-
-                        // 更新timeEdit控件显示总时长
-                        // ui->timeEdit->setTime(durationTime);
-
-
 
                         qDebug() << "视频时长:" << duration << "秒";
                     } else {
@@ -227,15 +239,9 @@ void MainWindow::on_horizontalSlider_valueChanged(int value)
 
     int current_frame = value;
     double current_second = current_frame / ui->video_frame_rate->value() ;
-    // 格式化为时分秒毫秒
-    int current_second_round = static_cast<int>(current_second);
-    int hours = current_second_round / 3600;
-    int minutes = (current_second_round % 3600) / 60;
-    int seconds = current_second_round % 60;
-    int milliseconds = static_cast<int>((current_second - current_second_round) * 1000);
-    QTime durationTime(hours, minutes, seconds, milliseconds);
+    QTime current_time = convertToTime(current_second);
     // 更新timeEdit控件显示总时长
-    ui->current_time->setTime(durationTime);
+    ui->current_time->setTime(current_time);
 
 }
 
@@ -295,9 +301,6 @@ void MainWindow::on_horizontalSlider_sliderReleased()
 
                 // 在QLabel上显示图片
                 startPng->setPixmap(show);
-
-                // 设置窗口的大小以适合图片
-                startPng->resize(show.width(), show.height());
 
                 startPng->show();
 
