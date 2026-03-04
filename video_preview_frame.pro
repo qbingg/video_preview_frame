@@ -13,6 +13,7 @@ SOURCES += \
     mainwindow.cpp
 
 HEADERS += \
+    MyDisplayImgWidget.h \
     mainwindow.h
 
 FORMS += \
