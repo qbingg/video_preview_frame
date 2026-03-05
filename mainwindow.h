@@ -14,6 +14,8 @@
 #include <QMessageBox>
 #include <QTime>
 #include <QSignalBlocker>
+#include <QSettings>
+#include <QDir>
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;
@@ -34,12 +36,15 @@ public:
     double convertToSeconds(const QTime time);
     QTime convertToTime(const double totalSeconds);
     void getVideoCurrentFrameFile(const QFileInfo &fileInfo);
+
+    void readSettings();
+    void writeSettings();
 private:
     Ui::MainWindow *ui;
 
     QFileInfo m_videoFileInfo;
 
-    // QPixmap m_currentFrame;
+    QSettings *m_settings = nullptr;
 
 protected:
     // 重写父类事件方法
@@ -47,6 +52,8 @@ protected:
     void dragEnterEvent(QDragEnterEvent* event) override;
     // 当拖放对象在窗口内释放时调用
     void dropEvent(QDropEvent* event) override;
+
+    void closeEvent(QCloseEvent* event) override;
 
 private slots:
     void on_horizontalSlider_valueChanged(int value);
