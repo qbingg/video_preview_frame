@@ -302,7 +302,11 @@ void MainWindow::dropEvent(QDropEvent *event)
     // 检查文件是否存在且是视频文件
     QFileInfo fileInfo(filePath);
     if (!fileInfo.exists() || !isVideoFile(fileInfo)) {
-        QMessageBox::warning(this, "剪辑", "请拖入有效的视频文件");
+        if(fileInfo.suffix().toLower()=="png"){
+            qDebug()<<"拖入png文件，忽略提示";
+        }else{
+            QMessageBox::warning(this, "剪辑", "请拖入有效的视频文件");
+        }
         return;
     }
 
