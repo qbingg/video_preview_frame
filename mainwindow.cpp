@@ -315,6 +315,10 @@ void MainWindow::dropEvent(QDropEvent *event)
 
     // 获取 “总时长”，显示到控件
     getVideoDuration(fileInfo);
+
+    // 渲染视频第0帧，显示到控件
+    ui->horizontalSlider->setValue(0);
+    getVideoCurrentFrameFile(m_videoFileInfo);
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
